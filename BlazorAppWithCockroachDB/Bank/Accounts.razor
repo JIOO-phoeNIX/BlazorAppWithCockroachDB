@@ -1,0 +1,48 @@
+﻿@page "/Accounts"
+
+@using CockroachDbLib.Repository
+@using CockroachDbLib.Models
+
+@inject IAccountRepository _accountRepository;
+
+<h3>All Accounts</h3>
+
+@if (AllAccounts.Count == 0)
+{
+    <p><em>No account found</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Available balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in AllAccounts)
+            {
+                <tr>
+                    <td><a href="/Account/@account.id"> @account.name</a></td>
+                    <td>$@account.balance</td>
+                    <td><a href="/EditAccount/@account.id" class="btn btn-info">Edit</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a href="/CreateAccount">Create an Account</a>
+}
+
+
+@code {
+
+    private List<Account> AllAccounts = new List<Account>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AllAccounts = _accountRepository.GetAllAccounts();
+
+    }
+}

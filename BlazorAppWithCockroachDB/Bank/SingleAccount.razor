@@ -1,0 +1,40 @@
+﻿@page "/Account/{Id:int}"
+
+@using CockroachDbLib.Repository
+@using CockroachDbLib.Models
+
+@inject IAccountRepository _accountRepository;
+@inject NavigationManager NavigationManager
+
+<h3>@Account.name Account Details</h3>
+<br />
+<p>Account balance: <em>$@Account.balance</em></p>
+<br />
+<br />
+<a href="/Accounts">Back to List</a>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    public Account Account { get; set; } = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id == null)
+        {
+            NavigationManager.NavigateTo("Accounts");
+        }
+
+        Account customerAccount = await _accountRepository.GetAccountById(Id);
+
+        if (customerAccount == null)
+        {
+            NavigationManager.NavigateTo("Accounts");
+        }
+        else
+        {
+            Account = customerAccount;
+        }
+    }
+}
